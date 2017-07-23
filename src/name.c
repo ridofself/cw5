@@ -43,7 +43,7 @@ static int name_check(const char* name)
 	unsigned int i;
 	char* checkName;
 
-	if ( !name ) return -4; /* name cannot be NULL */
+	if ( !name || !strcmp(name, "") ) return -4; /* no null or empty */
 
 	for ( i=0; i<name_count; i++ ) /* name is already taken */
 		if ( !strcmp(name, name_list[i]) ) return -3;

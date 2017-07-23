@@ -15,10 +15,12 @@ void test_test()
 
 #include "name.c"
 
-void test_name_new() /* assumes ~20 char name length max */
+/* this test suite assumes at least a 20 char NAME_SIZE_MAX */
+
+void test_name_new()
 {
 	unsigned int i;
-
+	char* truncName;
 	char* newName = "New Name";
 	unsigned int count = name_count;
 	assert(!strcmp(newName, name_new(newName)));
@@ -28,8 +30,9 @@ void test_name_new() /* assumes ~20 char name length max */
 
 	newName = malloc(sizeof (char) * NAME_SIZE_MAX +1);
 	for ( i=0; i<NAME_SIZE_MAX +1; i++ ) newName[i] = 'x';
-	assert(strcmp(newName, name_new(newName)));
-	name_delete(newName);
+	truncName = name_new(newName);
+	assert(strcmp(newName, truncName));
+	name_delete(truncName);
 	test_count++;
 
 	free(newName);
@@ -72,9 +75,24 @@ void test_name_check()
 	assert(name_check(NULL) == -4);
 	test_count++;
 
+	assert(name_check("") == -4);
+	test_count++;
+
 	assert(!name_check(goodName));
 	assert(!name_check(goodName)); /* ensure no side effect */
 	test_count++;
+}
+
+void test_name_change() /* proof of concept, no corresponding function */
+{
+	char* oldName = "name to be changed";
+	char* newName = "changed to this name";
+	char* name = name_new(oldName);
+	if ( !name_check(newName) ) strcpy(name, newName);
+	assert(!strcmp(name, newName));
+	test_count++;
+
+	name_delete(name);
 }
 
 #include "agent.c"
@@ -160,7 +178,11 @@ void test_agent_team_join()
 	assert(agent_team_join(joiner, NULL) == -2);
 	test_count++;
 
+	oldTeamCount = team->count;
 	assert(!agent_team_join(joiner, team));
+	test_count++;
+
+	assert(team->count == oldTeamCount +1);
 	test_count++;
 
 	user->team = team;
@@ -182,10 +204,15 @@ void test_agent_team_join()
 
 void test_agent_team_leave()
 {
+	unsigned int oldTeamCount;
 	struct agent* leaver = agent_new("leaves team");
 	struct agent_team* team = malloc(sizeof (struct agent_team));
 	agent_team_join(leaver, team);
+	oldTeamCount = team->count;
 	assert(!agent_team_leave(leaver, team));
+	test_count++;
+
+	assert(team->count == oldTeamCount -1);
 	test_count++;
 
 	assert(agent_team_leave(NULL, team) == -1);
@@ -207,6 +234,7 @@ void test_all()
 	test_name_new();
 	test_name_delete();
 	test_name_check();
+	test_name_change();
 
 	test_user_new();
 	test_user_delete();

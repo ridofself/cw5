@@ -41,7 +41,7 @@ static int user_delete(const struct user* user)
 			for ( ; i<user_count -1; i++ )
 				user_list[i] = user_list[i+1];
 			user_count--;
-			return 0;
+			return 0; /* user deleted */
 		}
 
 	return -2; /* no such user */
