@@ -1,5 +1,8 @@
 /* name.c */
 
+#ifndef NAME_C
+#define NAME_C
+
 #include <malloc.h> /* malloc */
 #include <string.h> /* memset, memcpy, strcmp, strlen */
 #include <ctype.h> /* isalpha */
@@ -7,10 +10,10 @@
 
 #define NAME_SIZE_MAX 20
 
-static char** name_list;
-static unsigned int name_count;
+char** name_list;
+unsigned int name_count;
 
-static char* name_new(const char* name)
+char* name_new(const char* name)
 {
 	char* newName = malloc(sizeof (char) * NAME_SIZE_MAX +1);
 	assert(newName);
@@ -22,7 +25,7 @@ static char* name_new(const char* name)
 	return name_list[name_count++];
 }
 
-static int name_delete(const char* name)
+int name_delete(const char* name)
 {
 	unsigned int i;
 	for ( i=0; i<name_count; i++ )
@@ -38,7 +41,7 @@ static int name_delete(const char* name)
 	return -1; /* no such name */
 }
 
-static int name_check(const char* name)
+int name_check(const char* name)
 {
 	unsigned int i;
 	char* checkName;
@@ -59,5 +62,7 @@ static int name_check(const char* name)
 
 	return 0; /* name is OK to use */
 }
+
+#endif
 
 /* end of file */

@@ -13,7 +13,7 @@ void test_test()
 	test_count++;
 }
 
-#include "name.c"
+#include "./business/name.c"
 
 /* this test suite assumes at least a 20 char NAME_SIZE_MAX */
 
@@ -95,7 +95,7 @@ void test_name_change() /* proof of concept, no corresponding function */
 	name_delete(name);
 }
 
-#include "agent.c"
+#include "./business/agent.c"
 
 void test_agent_new()
 {
@@ -130,7 +130,7 @@ void test_agent_delete()
 	test_count++;
 }
 
-#include "user.c"
+#include "./business/user.c"
 
 void test_user_new()
 {
