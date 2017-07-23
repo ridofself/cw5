@@ -1,0 +1,13 @@
+In file included from /home/rid/cw5/src/test_main.c:80:0:
+/home/rid/cw5/src/user.c: In function ‘user_team_agent_join’:
+/home/rid/cw5/src/user.c:53:24: error: dereferencing pointer to incomplete type ‘struct agent’
+  if ( !name_check(agent->name) ) return -6;
+                        ^
+/home/rid/cw5/src/test_main.c: In function ‘test_user_team_agent_join’:
+/home/rid/cw5/src/test_main.c:162:2: error: ISO C90 forbids mixed declarations and code [-Werror=declaration-after-statement]
+  struct user* fakeUser;
+  ^
+cc1: all warnings being treated as errors
+make[2]: *** [CMakeFiles/run_tests.dir/src/test_main.c.o] Error 1
+make[1]: *** [CMakeFiles/run_tests.dir/all] Error 2
+make: *** [all] Error 2

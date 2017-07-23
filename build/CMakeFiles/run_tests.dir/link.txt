@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/run_tests.dir/src/test_main.c.o  -o run_tests -rdynamic 

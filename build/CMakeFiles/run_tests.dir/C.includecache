@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/rid/cw5/src/agent.c
+
+/home/rid/cw5/src/name.c
+malloc.h
+-
+string.h
+-
+ctype.h
+-
+assert.h
+-
+
+/home/rid/cw5/src/test_main.c
+assert.h
+-
+stdio.h
+-
+string.h
+-
+malloc.h
+-
+name.c
+/home/rid/cw5/src/name.c
+agent.c
+/home/rid/cw5/src/agent.c
+user.c
+/home/rid/cw5/src/user.c
+
+/home/rid/cw5/src/user.c
+
