@@ -1,15 +1,11 @@
 /* agent.c */
 
-#include "name.c"
-
-#ifndef AGENT_C
-#define AGENT_C
-
-#define AGENT_TEAM_MAX 8
+#define AGENT_TEAM_MAX 6
 
 struct agent
 {
 	char* name;
+	struct stat* stat;
 };
 
 struct agent_team
@@ -18,10 +14,10 @@ struct agent_team
 	unsigned int count;
 };
 
-struct agent** agent_list;
-unsigned int agent_count;
+static struct agent** agent_list;
+static unsigned int agent_count;
 
-struct agent* agent_new(const char* name)
+static struct agent* agent_new(const char* name)
 {
 	struct agent* newUser;
 	if ( name_check(name) ) return NULL;
@@ -36,7 +32,7 @@ struct agent* agent_new(const char* name)
 	return agent_list[agent_count++];
 }
 
-int agent_delete(const struct agent* agent)
+static int agent_delete(const struct agent* agent)
 {
 	unsigned int i;
 
@@ -56,7 +52,7 @@ int agent_delete(const struct agent* agent)
 	return -2; /* no such agent */
 }
 
-int agent_team_join(struct agent* joiner, struct agent_team* team)
+static int agent_team_join(struct agent* joiner, struct agent_team* team)
 {
 	unsigned int i;
 	if ( !joiner ) return -1; /* cannot be NULL */
@@ -72,7 +68,7 @@ int agent_team_join(struct agent* joiner, struct agent_team* team)
 	return 0; /* member joined the team */
 }
 
-int agent_team_leave(struct agent* leaver, struct agent_team* team)
+static int agent_team_leave(struct agent* leaver, struct agent_team* team)
 {
 	unsigned int i;
 	if ( !leaver ) return -1; /* cannot be NULL */
@@ -88,7 +84,5 @@ int agent_team_leave(struct agent* leaver, struct agent_team* team)
 		}
 	return -3; /* no such team member */
 }
-
-#endif
 
 /* end of file */

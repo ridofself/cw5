@@ -1,21 +1,15 @@
 /* user.c */
 
-#include "name.c"
-#include "agent.c"
-
-#ifndef USER_C
-#define USER_C
-
 struct user
 {
 	char* name;
 	struct agent_team* team;
 };
 
-struct user** user_list;
-unsigned int user_count;
+static struct user** user_list;
+static unsigned int user_count;
 
-struct user* user_new(const char* name)
+static struct user* user_new(const char* name)
 {
 	struct user* newUser;
 	if ( name_check(name) ) return NULL;
@@ -32,7 +26,7 @@ struct user* user_new(const char* name)
 	return user_list[user_count++];
 }
 
-int user_delete(const struct user* user)
+static int user_delete(const struct user* user)
 {
 	unsigned int i;
 
@@ -52,7 +46,5 @@ int user_delete(const struct user* user)
 
 	return -2; /* no such user */
 }
-
-#endif
 
 /* end of file */

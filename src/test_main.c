@@ -228,6 +228,47 @@ void test_agent_team_leave()
 	agent_delete(leaver);
 }
 
+#include "./business/stat.c"
+
+void test_stat()
+{
+	struct agent* agent = agent_new("has stats");
+	struct stat stat = {40, 81, 10, 0, 0.0001};
+	assert(stat.fat == 10.0);
+	test_count++;
+
+	agent->stat = &stat;
+	assert(agent->stat->fat == 10.0);
+	test_count++;
+
+	assert(stat_weight(&stat) == 40 + 81 + 10);
+	test_count++;
+
+	assert(stat_water_level(&stat) == 1);
+	test_count++;
+
+	stat.water *= 0.76;
+	assert(stat_water_level(&stat) == 
+		((2* stat.water) - (3* stat.grain)) / stat.grain);
+	test_count++;
+
+	stat.water *= 0.90;
+	assert(stat_water_level(&stat) == 0);
+	test_count++;
+}
+/*
+void test_stat_fat_loss()
+{
+	struct stat stat = {40, 81, 10, 0};
+	unsigned int i;
+	for ( i=0; i<15001; i++ )
+	{
+		stat.fat -= stat_fat_loss(stat.grain);
+		if ( i%150 == 0 )
+			printf("%f\t", stat.fat);
+	}
+}
+*/
 void test_all()
 {
 	test_test();
@@ -243,6 +284,8 @@ void test_all()
 	test_agent_delete();
 	test_agent_team_join();
 	test_agent_team_leave();
+
+	test_stat();
 }
 
 int main()
