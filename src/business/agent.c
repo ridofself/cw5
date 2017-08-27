@@ -19,16 +19,16 @@ static unsigned int agent_count;
 
 static struct agent* agent_new(const char* name)
 {
-	struct agent* newUser;
+	struct agent* newAgent;
 	if ( name_check(name) ) return NULL;
 
-	newUser = malloc(sizeof (struct agent*));
-	assert(newUser);
-	newUser->name = name_new(name);
+	newAgent = malloc(sizeof (struct agent*));
+	assert(newAgent);
+	newAgent->name = name_new(name);
 	agent_list = realloc(agent_list, 
 		(agent_count +1) * sizeof (struct agent*));
 	assert(agent_list);
-	agent_list[agent_count] = newUser;
+	agent_list[agent_count] = newAgent;
 	return agent_list[agent_count++];
 }
 
@@ -49,7 +49,7 @@ static int agent_delete(const struct agent* agent)
 			return 0; /* agent deleted */
 		}
 
-	return -2; /* no such agent */
+	return -2; /* no such agent listed */
 }
 
 static int agent_team_join(struct agent* joiner, struct agent_team* team)
@@ -63,9 +63,16 @@ static int agent_team_join(struct agent* joiner, struct agent_team* team)
 	for ( i=0; i<AGENT_TEAM_MAX; i++ ) /* cannot join twice */
 		if ( team->member[i] == joiner ) return -4;
 
-	team->member[team->count] = joiner;
-	team->count++;
-	return 0; /* member joined the team */
+	for ( i=0; i<agent_count; i++ )
+		if ( joiner == agent_list[i] )
+		{
+			team->member[team->count] = joiner;
+			team->count++;
+			return 0; /* member joined the team */
+		}
+
+	return -5; /* unlisted agent */
+	
 }
 
 static int agent_team_leave(struct agent* leaver, struct agent_team* team)
@@ -82,7 +89,7 @@ static int agent_team_leave(struct agent* leaver, struct agent_team* team)
 			team->count--;
 			return 0; /* member left the team */
 		}
-	return -3; /* no such team member */
+	return -3; /* not a member of this team */
 }
 
 /* end of file */

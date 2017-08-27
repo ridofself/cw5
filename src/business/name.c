@@ -12,7 +12,7 @@ static char* name_new(const char* name)
 	char* newName = malloc(sizeof (char) * NAME_SIZE_MAX +1);
 	assert(newName);
 	memset(newName, '\0', NAME_SIZE_MAX +1);
-	memcpy(newName, name, NAME_SIZE_MAX);
+	memcpy(newName, name, NAME_SIZE_MAX); /* truncates long names */
 	name_list = realloc(name_list, (name_count +1) * sizeof (char*));
 	assert(name_list);
 	name_list[name_count] = newName;
@@ -42,12 +42,12 @@ static int name_check(const char* name)
 
 	if ( !name || !strcmp(name, "") ) return -4; /* no null or empty */
 
-	for ( i=0; i<name_count; i++ ) /* name is already taken */
-		if ( !strcmp(name, name_list[i]) ) return -3;
+	for ( i=0; i<name_count; i++ )
+		if ( !strcmp(name, name_list[i]) ) return -3; /* name taken */
 
 	checkName = name_new(name);
 	if ( strcmp(checkName, name) )
-		return -2; /* name is too long */
+		return -2; /* name was truncated because it was too long */
 
 	name_delete(checkName);
 

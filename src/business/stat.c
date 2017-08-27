@@ -3,22 +3,22 @@
 struct stat
 {
 	float grain; /* weight minus fat and water; measures strength */
-	float water; /* pounds of water, max is 2.0*grain + 0.1*fat */
-	float fat; /* depends on food availability and appetite */
+	float water; /* pounds of water in body */
+	float fat; /* pounds of fat in body */
 
-	float fat_used; /* number of minutes worked without rest */
+	float fat_used; /* based on minutes worked without rest */
 	float fat_use_max;
 };
 
 float stat_s_curve(float percent) /* argument between 1.0 and 0.0 */
 {
-	/* morphs stat level into gradual initial and final decline */
+	/* gradual initial decline, rapid decline, gradual final decline */
 	return (3 * (percent*percent)) - (2 * (percent*percent*percent));
 }
 
 float stat_weight(struct stat* stat)
 {
-	/* total pounds of body weight without tare */
+	/* total pounds of body weight minus tare weight (clothes, etc) */
 	return stat->grain + stat->water + stat->fat;
 }
 
@@ -33,7 +33,7 @@ float stat_hydration(struct stat* stat)
 
 float stat_water_cycle(struct stat* stat)
 {
-	/* amount of water which can be drank or sweat, per water_level */
+	/* amount of water which can be drank or sweat in one minute */
 	return 0.00125 * stat->grain *
 		stat_hydration(stat) * stat_hydration(stat);
 }
@@ -52,7 +52,7 @@ float stat_health(struct stat* stat)
 
 float stat_strength(struct stat* stat)
 {
-	/* fat burned per minute of exercise */
+	/* fat burned per minute of work */
 	return 0.0004 * stat->grain * stat_health(stat);
 }
 

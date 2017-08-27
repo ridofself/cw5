@@ -79,7 +79,7 @@ void test_name_check()
 	test_count++;
 
 	assert(!name_check(goodName));
-	assert(!name_check(goodName)); /* ensure no side effect */
+	assert(!name_check(goodName)); /* checking has no side effects */
 	test_count++;
 }
 
@@ -126,7 +126,7 @@ void test_agent_delete()
 	assert(agent_delete(delAgent) == -2);
 	test_count++;
 
-	assert(!name_check(name)); /* name should have been deleted */
+	assert(!name_check(name)); /* name should be available again */
 	test_count++;
 }
 
@@ -161,49 +161,57 @@ void test_user_delete()
 	assert(user_delete(delUser) == -2); /* already deleted */
 	test_count++;
 
-	assert(!name_check(name)); /* name should have been deleted */
+	assert(!name_check(name)); /* name should be available again */
 	test_count++;
 }
 
 void test_agent_team_join()
 {
+	struct agent* rogueAgent = malloc(sizeof (struct agent*));
+
 	unsigned int oldTeamCount;
 	struct user* user = user_new("has team");
 	struct agent* joiner = agent_new("joins team");
 	struct agent_team* team = malloc(sizeof (struct agent_team));
 
-	assert(agent_team_join(NULL, team) == -1);
+	assert(agent_team_join(NULL, team) == -1); /* cannot be null */
 	test_count++;
 
-	assert(agent_team_join(joiner, NULL) == -2);
+	assert(agent_team_join(joiner, NULL) == -2); /* cannot be null */
+	test_count++;
+
+	assert(agent_team_join(rogueAgent, team) == -5); /* unlisted agent */
 	test_count++;
 
 	oldTeamCount = team->count;
-	assert(!agent_team_join(joiner, team));
+	assert(!agent_team_join(joiner, team)); /* successful join */
 	test_count++;
 
-	assert(team->count == oldTeamCount +1);
+	assert(team->count == oldTeamCount +1); /* team count incremented */
 	test_count++;
 
 	user->team = team;
-	assert(user->team == team);
+	assert(user->team == team); /* team properly assigned to a user */
 	test_count++;
 
 	oldTeamCount = team->count;
 	team->count = AGENT_TEAM_MAX;
-	assert(agent_team_join(joiner, team) == -3);
+	assert(agent_team_join(joiner, team) == -3); /* team is full */
 	team->count = oldTeamCount;
 	test_count++;
 
-	assert(agent_team_join(joiner, team) == -4);
+	assert(agent_team_join(joiner, team) == -4); /* already joined */
 	test_count++;
 
 	agent_delete(joiner);
+	free(rogueAgent);
 	user_delete(user); /* also frees team (but not agents) */
 }
 
 void test_agent_team_leave()
 {
+	struct agent* rogueAgent = malloc(sizeof (struct agent*));
+
 	unsigned int oldTeamCount;
 	struct agent* leaver = agent_new("leaves team");
 	struct agent_team* team = malloc(sizeof (struct agent_team));
@@ -212,23 +220,27 @@ void test_agent_team_leave()
 	assert(!agent_team_leave(leaver, team));
 	test_count++;
 
-	assert(team->count == oldTeamCount -1);
+	assert(team->count == oldTeamCount -1); /* count is decremented */
 	test_count++;
 
-	assert(agent_team_leave(NULL, team) == -1);
+	assert(agent_team_leave(NULL, team) == -1); /* cannot be NULL */
 	test_count++;
 
-	assert(agent_team_leave(leaver, NULL) == -2);
+	assert(agent_team_leave(leaver, NULL) == -2); /* cannot be NULL */
 	test_count++;
 
-	assert(agent_team_leave(leaver, team) == -3);
+	assert(agent_team_leave(leaver, team) == -3); /* no such member */
+	test_count++;
+
+	assert(agent_team_leave(rogueAgent, team) == -3); /* no such member */
 	test_count++;
 
 	free(team);
+	free(rogueAgent);
 	agent_delete(leaver);
 }
 
-#include "test_stat.c"
+#include "./tests/test_stat.c"
 
 void test_all()
 {

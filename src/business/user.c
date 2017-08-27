@@ -35,7 +35,7 @@ static int user_delete(const struct user* user)
 	for ( i=0; i<user_count; i++ )
 		if ( user == user_list[i] )
 		{
-			free(user_list[i]->team);
+			free(user_list[i]->team); /* frees users' team */
 			name_delete(user_list[i]->name);
 			free(user_list[i]);
 			for ( ; i<user_count -1; i++ )
